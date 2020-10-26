@@ -2,7 +2,7 @@
 SQL Query 문법 관련 정리
 
 ## Standard SQL
-### order by
+### ORDER BY
 > order by 뒤에 각 칼럼마다 asc 혹은 desc 지정해줘야함.
 > ```sql
 > SELECT 
@@ -23,3 +23,35 @@ SQL Query 문법 관련 정리
 > ```
 > ORACLE 의 경우 NVL(expr1, expr2) 함수를 통해서 expr1 이 NULL 이면 expr2 를 반환하는 함수로 대체할 수 있음
 
+### OVER()
+> `COUNT(*) OVER()` : 전체행 카운트  
+> ```sql
+> -- TABLE EXAM 
+> -- NAME | MAJOR | SCORE
+> -- 홍길동 | 수학  | 99
+> -- 홍길순 | 수학  | 95
+> -- 고니  | 영어   | 33
+>
+> SELECT *, COUNT(*) OVER() FROM EXAM;
+> -- 결과)
+> -- NAME | MAJOR | SCORE | COUNT
+> -- 홍길동 | 수학  | 99   | 3
+> -- 홍길순 | 수학  | 95   | 3
+> -- 고니  | 영어   | 33   | 3
+> ```
+>
+> `COUNT(*) OVER(PARTITION BY 컬럼)` : 그룹단위로 나누어 카운트  
+> ```sql
+> -- TABLE EXAM 
+> -- NAME | MAJOR | SCORE
+> -- 홍길동 | 수학  | 99
+> -- 홍길순 | 수학  | 95
+> -- 고니  | 영어   | 33
+>
+> SELECT *, COUNT(*) OVER(PARTITION BY MAJOR) FROM EXAM;
+> -- 결과)
+> -- NAME | MAJOR | SCORE | COUNT
+> -- 홍길동 | 수학  | 99   | 2
+> -- 홍길순 | 수학  | 95   | 2
+> -- 고니  | 영어   | 33   | 1
+> ```

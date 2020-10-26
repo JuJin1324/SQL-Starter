@@ -23,7 +23,7 @@ SQL Query 문법 관련 정리
 > ```
 > ORACLE 의 경우 NVL(expr1, expr2) 함수를 통해서 expr1 이 NULL 이면 expr2 를 반환하는 함수로 대체할 수 있음
 
-### OVER()
+### OVER
 > `COUNT(*) OVER()` : 전체행 카운트  
 > ```sql
 > -- TABLE EXAM 
@@ -55,3 +55,6 @@ SQL Query 문법 관련 정리
 > -- 홍길순 | 수학  | 95   | 2
 > -- 고니  | 영어   | 33   | 1
 > ```
+
+### 서브쿼리를 하는 이유
+> JOIN 및 SELECT 한 칼럼의 데이터를 그대로 쓰는 것이 아닌 함수(ex: TO_CHAR(COL1)) 연산이 들어가는 경우 JOIN 혹은 함수 연산을 진행할 ROW의 갯수를 줄이기 위해서 서브쿼리를 이용한다.

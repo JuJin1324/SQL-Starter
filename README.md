@@ -58,3 +58,25 @@ SQL Query 문법 관련 정리
 
 ### 서브쿼리를 하는 이유
 > JOIN 및 SELECT 한 칼럼의 데이터를 그대로 쓰는 것이 아닌 함수(ex: TO_CHAR(COL1)) 연산이 들어가는 경우 JOIN 혹은 함수 연산을 진행할 ROW의 갯수를 줄이기 위해서 서브쿼리를 이용한다.
+
+### ROW_NUMBER OVER
+> ROW_NUMBER() OVER(PARTITION BY col1 ORDER BY col2 ASC/DESC): col1을 기준으로 ROW_NUMBER를 나눠서 매긴다.
+> 예를 들어서 MAJOR 가 수학인 애들끼리 1부터 ROW_NUMBER를 주고 MAJOR 가 영어인 애들을 다시 1부터 ROW_NUMBER를 준다.
+> 뒤에 ORDER BY는 생략이 가능하며 ORDER BY 에 SCORE DESC 를 넣어서 점수가 높은 애부터 1부터 ROW_NUMBER를 줄 수 있다.(줄세우기)
+> ```sql
+> -- TABLE EXAM 
+> -- NAME | MAJOR | SCORE
+> -- 홍길동 | 수학  | 99
+> -- 홍길순 | 수학  | 95
+> -- 고니  | 영어   | 33
+> -- 희동이 | 영어  | 55
+>
+> SELECT *, ROW_NUMBER() OVER (PARTITION BY MAJOR ORDER BY SCORE DESC) FROM EXAM;
+> -- 결과)
+> -- NAME | MAJOR | SCORE | ROW_NUMBER
+> -- 홍길동 | 수학  | 99     | 1
+> -- 홍길순 | 수학  | 95     | 2
+> -- 고니  | 영어   | 33    | 2
+> -- 희동이 | 영어  | 55     | 1
+> ```
+

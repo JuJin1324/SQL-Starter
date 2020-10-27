@@ -71,6 +71,7 @@ SQL Query 문법 관련 정리
 > -- 고니  | 영어   | 33
 > -- 희동이 | 영어  | 55
 >
+> -- PARTITION BY 및 ORDER BY 까지 하는 경우
 > SELECT *, ROW_NUMBER() OVER (PARTITION BY MAJOR ORDER BY SCORE DESC) FROM EXAM;
 > -- 결과)
 > -- NAME | MAJOR | SCORE | ROW_NUMBER
@@ -78,5 +79,14 @@ SQL Query 문법 관련 정리
 > -- 홍길순 | 수학  | 95     | 2
 > -- 고니  | 영어   | 33    | 2
 > -- 희동이 | 영어  | 55     | 1
+>
+> -- ORDER BY 만 하는 경우
+> SELECT *, ROW_NUMBER() OVER (ORDER BY SCORE DESC) FROM EXAM;
+> -- 결과)
+> -- NAME | MAJOR | SCORE | ROW_NUMBER
+> -- 홍길동 | 수학  | 99     | 1
+> -- 홍길순 | 수학  | 95     | 2
+> -- 고니  | 영어   | 33    | 4
+> -- 희동이 | 영어  | 55     | 3
 > ```
 

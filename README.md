@@ -90,8 +90,10 @@ SQL Query 문법 관련 정리
 > -- 고니  | 영어   | 33    | 4
 > ```
 
-### UNION ALL
+### UNION
 > 2개 이상의 SELECT 문의 결과를 합친다. 보통 일반 테이블과 히스토리 테이블과 결과를 합쳐서 보는데 사용한다.  
+> `UNION`: 중복 행이 있는 경우 중복을 제거한다.  
+> `UNION ALL`: 중복 행이 있어도 중복을 제거하지 않는다.  
 > ```sql
 > SELECT * FROM EXAM UNION ALL
 > SELECT * FROM EXAM_HIS;

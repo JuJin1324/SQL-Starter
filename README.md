@@ -107,5 +107,5 @@ SQL Query 문법 관련 정리
 > SELECT NOW() - INTERVAL '30 MINUTE';
 >
 > # 현재 시간으로 부터 1시간 후 시간 가져오기
->  SELECT NOW() + INTERVAL '1 HOUR';
+> SELECT NOW() + INTERVAL '1 HOUR';
 > ```

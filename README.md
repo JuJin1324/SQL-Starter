@@ -98,3 +98,14 @@ SQL Query 문법 관련 정리
 > SELECT * FROM EXAM UNION ALL
 > SELECT * FROM EXAM_HIS;
 > ```
+
+### INTERVAL
+> 시간 조작 함수, 특정 시간으로 부터 `30분 전` 혹은 `1시간 후` 와 같이 시간 조건 조작을 위해서 주로 사용한다.  
+> 아래 사용 예시는 postgreSQL 기준  
+> ```sql
+> # 현재 시간으로 부터 30분 전 시간 가져오기
+> SELECT NOW() - INTERVAL '30 MINUTE';
+>
+> # 현재 시간으로 부터 1시간 후 시간 가져오기
+>  SELECT NOW() + INTERVAL '1 HOUR';
+> ```

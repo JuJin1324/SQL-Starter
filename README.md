@@ -109,3 +109,7 @@ SQL Query 문법 관련 정리
 > # 현재 시간으로 부터 1시간 후 시간 가져오기
 > SELECT NOW() + INTERVAL '1 HOUR';
 > ```
+
+### InnoDB
+> MySQL/MariaDB 에서 사용하는 트랜잭션-세이프 스토리지 엔진  
+> 참조사이트: [InnoDB 란 무엇인가?](https://joridari.tistory.com/15)  

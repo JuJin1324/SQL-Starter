@@ -1,7 +1,35 @@
 # SQL-Starter
 SQL Query 문법 관련 정리
 
+## Oracle
+### Outer Join
+> LEFT OUTER JOIN: 왼쪽에 명기된 테이블의 요소는 다 나오고 오른쪽에 명기된 테이블 요소는 왼쪽과 매칭되는 row가 없으면 null로 표기한다.  
+> RIGHT OUTER JOIN: 오른쪽에 명기된 테이블의 요소는 다 나오고 왼쪽에 명기된 테이블 요소는 오른쪽과 매칭되는 row가 없으면 null로 표기한다.  
+> ```sql
+> -- TABLE STUDENT
+> -- STUDENT_KEY | STUDENT_NAME
+> --          1  |  A
+> --          2  |  B
+> --          3  |  C
+> --          4  |  D
+>
+> -- TABLE GRADE
+> -- STUDENT_KEY | SCORE
+> --          1  |  10
+> --          2  |  20
+> --          4  |  40
+> ```
+> 
+
 ## Standard SQL
+### Outer Join
+> LEFT OUTER JOIN: 왼쪽에 명기된 테이블의 요소는 다 나오고 오른쪽에 명기된 테이블 요소는 왼쪽과 매칭되는 row가 없으면 null로 표기한다.  
+> RIGHT OUTER JOIN: 오른쪽에 명기된 테이블의 요소는 다 나오고 왼쪽에 명기된 테이블 요소는 오른쪽과 매칭되는 row가 없으면 null로 표기한다.  
+> 
+
+### INNER JOIN
+> 
+
 ### ORDER BY
 > order by 뒤에 각 칼럼마다 asc 혹은 desc 지정해줘야함.
 > ```sql

@@ -85,6 +85,36 @@ SQL Query 문법 관련 정리
 > --        4       |  D   |        4       | 40
 > ```
 
+### INNER JOIN
+> 조인하는 두 테이블에서 조인 조건에 부합하는 ROW 만 가져온다.
+> ```sql
+> -- TABLE STUDENT
+> -- STUDENT_KEY | STUDENT_NAME
+> --     1       |      A
+> --     2       |      B
+> --     3       |      C
+> --     4       |      D
+>
+> -- TABLE GRADE
+> -- STUDENT_KEY | SCORE
+> --     1       |  10
+> --     2       |  20
+> --     4       |  40
+>
+> -- INNER JOIN
+> SELECT 
+>   * 
+> FROM STUDENT ST, GRADE GD
+> WHERE 
+>   GD.STUDENT_KEY = ST.STUDENT_KEY;    -- 다음 조건에도 GD 에 관한 WHERE 조건이 나오도록 GD를 먼저 써줬다.
+> 
+> -- 결과
+> -- ST.STUDENT_KEY | NAME | GD.STUDENT_KEY | SCORE 
+> --        1       |  A   |        1       |  10
+> --        2       |  B   |        2       | 20
+> --        4       |  D   |        4       | 40
+> ```
+
 ### ORDER BY
 > order by 뒤에 각 칼럼마다 asc 혹은 desc 지정해줘야함.
 > ```sql

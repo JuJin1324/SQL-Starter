@@ -8,27 +8,82 @@ SQL Query 문법 관련 정리
 > ```sql
 > -- TABLE STUDENT
 > -- STUDENT_KEY | STUDENT_NAME
-> --          1  |  A
-> --          2  |  B
-> --          3  |  C
-> --          4  |  D
+> --     1       |      A
+> --     2       |      B
+> --     3       |      C
+> --     4       |      D
 >
 > -- TABLE GRADE
 > -- STUDENT_KEY | SCORE
-> --          1  |  10
-> --          2  |  20
-> --          4  |  40
-> ```
+> --     1       |  10
+> --     2       |  20
+> --     4       |  40
 > 
+> -- STUDENT TABLE 기준 LEFT OUTER JOIN
+> SELECT *
+> FROM STUDENT ST, GRADE GD
+> WHERE ST.STUDENT_KEY = GD.STUDENT_KEY(+);     -- 왼쪽 테이블 전부에 오른쪽 테이블이 (+)되는 형태로 기억하자.
+> 
+> -- 결과
+> -- ST.STUDENT_KEY | NAME | GD.STUDENT_KEY | SCORE 
+> --        1       |  A   |        1       |  10
+> --        2       |  B   |        2       | 20
+> --        4       |  D   |        4       | 40
+> --        3       |  C   |        null    | null
+> 
+> -- STUDENT TABLE 기준 RIGHT OUTER JOIN
+> SELECT * 
+> FROM STUDENT ST, GRADE GD
+> WHERE ST.STUDENT_KEY(+) = GD.STUDENT_KEY;     -- 오른쪽 테이블 전부에 왼쪽 테이블이 (+)되는 형태로 기억하자.
+> 
+> -- 결과
+> -- ST.STUDENT_KEY | NAME | GD.STUDENT_KEY | SCORE 
+> --        1       |  A   |        1       |  10
+> --        2       |  B   |        2       | 20
+> --        4       |  D   |        4       | 40
+> ```
 
 ## Standard SQL
 ### Outer Join
 > LEFT OUTER JOIN: 왼쪽에 명기된 테이블의 요소는 다 나오고 오른쪽에 명기된 테이블 요소는 왼쪽과 매칭되는 row가 없으면 null로 표기한다.  
 > RIGHT OUTER JOIN: 오른쪽에 명기된 테이블의 요소는 다 나오고 왼쪽에 명기된 테이블 요소는 오른쪽과 매칭되는 row가 없으면 null로 표기한다.  
+> ```sql
+> -- TABLE STUDENT
+> -- STUDENT_KEY | STUDENT_NAME
+> --     1       |      A
+> --     2       |      B
+> --     3       |      C
+> --     4       |      D
+>
+> -- TABLE GRADE
+> -- STUDENT_KEY | SCORE
+> --     1       |  10
+> --     2       |  20
+> --     4       |  40
 > 
-
-### INNER JOIN
+> -- STUDENT TABLE 기준 LEFT OUTER JOIN
+> SELECT *
+> FROM STUDENT ST 
+> LEFT OUTER JOIN GRADE GD ON GD.STUDENT_KEY = ST.STUDENT_KEY;  -- 일부러 GD 를 앞에 두었다.
 > 
+> -- 결과
+> -- ST.STUDENT_KEY | NAME | GD.STUDENT_KEY | SCORE 
+> --        1       |  A   |        1       |  10
+> --        2       |  B   |        2       | 20
+> --        4       |  D   |        4       | 40
+> --        3       |  C   |        null    | null
+> 
+> -- STUDENT TABLE 기준 RIGHT OUTER JOIN
+> SELECT * 
+> FROM STUDENT ST
+> RIGHT OUTER JOIN GRADE GD ON GD.STUDENT_KEY = ST.STUDENT_KEY;  -- 일부러 GD 를 앞에 두었다.
+> 
+> -- 결과
+> -- ST.STUDENT_KEY | NAME | GD.STUDENT_KEY | SCORE 
+> --        1       |  A   |        1       |  10
+> --        2       |  B   |        2       | 20
+> --        4       |  D   |        4       | 40
+> ```
 
 ### ORDER BY
 > order by 뒤에 각 칼럼마다 asc 혹은 desc 지정해줘야함.

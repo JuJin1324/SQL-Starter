@@ -28,6 +28,9 @@ SQL Query 문법 관련 정리
 > 외래키를 가진 테이블(EMPLOYEE)이 자식 테이블이고, 참조되는 테이블(DEPARTMENT)이 부모 테이블이다.  
 > ERD 에서 까치발을 가지고 있는 테이블이 다(자식) 테이블 / '|' 을 가지고 있는 테이블이 일(부모) 테이블이다.  
 
+### JOIN: Inner vs Outer
+> Outer 조인의 경우 쿼리 실행 Cost 가 Inner 보다 많이 들며 Outer 조인의 경우 Explain 으로 Cost 측정이 불가능하다.
+
 ## Oracle
 ### Outer Join
 > LEFT OUTER JOIN: 왼쪽에 명기된 테이블의 요소는 다 나오고 오른쪽에 명기된 테이블 요소는 왼쪽과 매칭되는 row가 없으면 null로 표기한다.  

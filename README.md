@@ -44,6 +44,16 @@ SQL Query 문법 관련 정리
 > ```
 
 ## Standard SQL
+### Scalar(스칼라) [권장하지 않음.]
+> SQL 에서 단일 값을 스칼라 값이라고 한다.  
+> 스칼라 서브쿼리는 SELECT 절에서 오는 서브쿼리로 결과 값으로 1행만 반환한다.
+> ```sql
+> SELECT 
+>   EPL.EPL_NAME, 
+>   (SELECT DPT_NAME FROM DEPARTMENT DPT WHERE DPT_KEY = EPL.DPT_KEY) DPT_NAME  
+> FROM EMPLOYEE EPL; 
+> ```
+
 ### Outer Join
 > LEFT OUTER JOIN: 왼쪽에 명기된 테이블의 요소는 다 나오고 오른쪽에 명기된 테이블 요소는 왼쪽과 매칭되는 row가 없으면 null로 표기한다.  
 > RIGHT OUTER JOIN: 오른쪽에 명기된 테이블의 요소는 다 나오고 왼쪽에 명기된 테이블 요소는 오른쪽과 매칭되는 row가 없으면 null로 표기한다.  

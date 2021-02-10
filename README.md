@@ -6,7 +6,7 @@ SQL Query 문법 관련 정리
 > 대부분의 DB 에서는 Key(PK/UK/FK) 생성 시에 모두 자동으로 Index 를 생성해준다. 하지만 Index 가 자동으로 생성되면 시스템에서 자동으로 붙여준 이름으로 생성이 된다.
 > Index 를 이용한 쿼리 및 Index 관리 측면에서 Index 이름을 지정해서 생성한 다음에 Table 의 PK 혹은 UK 로 사용하는 것이 바람직하다.
 
-### 테이블 관계
+### 1:N(일대다) 테이블 관계
 > 예시 테이블
 > ```sql
 > CREATE TABLE DEPARTMENT(
@@ -23,10 +23,14 @@ SQL Query 문법 관련 정리
 > FOREIGN KEY (DPT_ID) REFERENCES DEPARTMENT(DPT_ID)
 > );
 > ```
-> 위의 테이블은 다대일 관계 테이블이다: 다(EMPLOYEE) 대 일(DEPARTMENT)  
+> 위의 테이블은 일대다 관계 테이블이다: 다(EMPLOYEE) 대 일(DEPARTMENT)  
 > 일(DEPARTMENT)인 테이블이 부모 테이블이며 다(EMPLOYEE)인 테이블이 자식 테이블이다.  
 > 외래키를 가진 테이블(EMPLOYEE)이 자식 테이블이고, 참조되는 테이블(DEPARTMENT)이 부모 테이블이다.  
 > ERD 에서 까치발을 가지고 있는 테이블이 다(자식) 테이블 / '|' 을 가지고 있는 테이블이 일(부모) 테이블이다.  
+
+### 1:1(일대일) 테이블 관계
+> Foreign Key 를 가지고 있는 자식 테이블에서 Foreign Key 가 not null 인 경우 일대일 관계가 성립되며
+> 해당 자식 테이블과 부모 테이블과의 Join 시에는 성능 최적화를 위해서 Outer Join 이 아닌 Inner Join 을 사용한다.
 
 ### JOIN: Inner vs Outer
 > Outer 조인의 경우 쿼리 실행 Cost 가 Inner 보다 많이 들며 Outer 조인의 경우 Explain 으로 Cost 측정이 불가능하다.

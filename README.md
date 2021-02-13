@@ -28,9 +28,9 @@ SQL Query 문법 관련 정리
 > 외래키를 가진 테이블(EMPLOYEE)이 자식 테이블이고, 참조되는 테이블(DEPARTMENT)이 부모 테이블이다.  
 > ERD 에서 까치발을 가지고 있는 테이블이 다(자식) 테이블 / '|' 을 가지고 있는 테이블이 일(부모) 테이블이다.  
 
-### 1:1(일대일) 테이블 관계
-> Foreign Key 를 가지고 있는 자식 테이블에서 Foreign Key 가 not null 인 경우 일대일 관계가 성립되며
-> 해당 자식 테이블과 부모 테이블과의 Join 시에는 성능 최적화를 위해서 Outer Join 이 아닌 Inner Join 을 사용한다.
+### Foreign Key 가 NOT NULL 인 경우
+> Foreign Key 를 가지고 있는 자식 테이블에서 Foreign Key 가 NOT NULL 인 경우 
+> 부모 테이블과의 Join 시 부모 테이블의 ROW 가 NULL 인 경우가 없음으로 성능 최적화를 위해서 Outer Join 이 아닌 Inner Join 을 사용한다.
 
 ### JOIN: Inner vs Outer
 > Outer 조인의 경우 쿼리 실행 Cost 가 Inner 보다 많이 들며 Outer 조인의 경우 Explain 으로 Cost 측정이 불가능하다.

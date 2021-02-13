@@ -1,0 +1,10 @@
+version: '3'
+
+services:
+  oracle:
+    container_name: sql-starter-oracle
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 1521:1521

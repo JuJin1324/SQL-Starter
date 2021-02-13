@@ -9,19 +9,23 @@ SQL Query 문법 관련 정리
 ### 1:N(일대다) 테이블 관계
 > 예시 테이블
 > ```sql
-> CREATE TABLE DEPARTMENT(
-> DPT_ID INT AUTO_INCREMENT PRIMARY KEY,
-> DPT_NAME VARCHAR(20) NOT NULL,
-> DPT_CODE CHAR(13) NOT NULL UNIQUE KEY
+> CREATE TABLE DEPARTMENT
+> (
+>   DPT_KEY  NUMBER       NOT NULL,
+>   DPT_NAME VARCHAR2(20) NOT NULL,
+>   DPT_CODE VARCHAR2(20) NOT NULL
 > );
-> 
-> CREATE TABLE EMPLOYEE (
-> EMP_ID INT AUTO_INCREMENT PRIMARY KEY,
-> EMP_NAME VARCHAR(20) NOT NULL,
-> EMP_CODE CHAR(13) NOT NULL UNIQUE KEY,
-> DPT_ID INT,
-> FOREIGN KEY (DPT_ID) REFERENCES DEPARTMENT(DPT_ID)
+> ALTER TABLE DEPARTMENT ADD (CONSTRAINT DPT_PK PRIMARY KEY (DPT_KEY) USING INDEX DPT_PK);
+>
+> CREATE TABLE EMPLOYEE
+> (
+>   EMP_KEY  NUMBER       NOT NULL,
+>   EMP_NAME VARCHAR2(20) NOT NULL,
+>   EMP_CODE VARCHAR2(20) NOT NULL,
+>   DPT_KEY  NUMBER       NOT NULL
 > );
+> ALTER TABLE EMPLOYEE ADD (CONSTRAINT EMP_PK PRIMARY KEY (EMP_KEY) USING INDEX EMP_PK);
+> ALTER TABLE EMPLOYEE ADD CONSTRAINT EMP_FK FOREIGN KEY (DPT_KEY) REFERENCES DEPARTMENT (DPT_KEY) ON DELETE CASCADE;
 > ```
 > 위의 테이블은 일대다 관계 테이블이다: 다(EMPLOYEE) 대 일(DEPARTMENT)  
 > 일(DEPARTMENT)인 테이블이 부모 테이블이며 다(EMPLOYEE)인 테이블이 자식 테이블이다.  
@@ -36,48 +40,108 @@ SQL Query 문법 관련 정리
 > Outer 조인의 경우 쿼리 실행 Cost 가 Inner 보다 많이 들며 Outer 조인의 경우 Explain 으로 Cost 측정이 불가능하다.
 
 ## Oracle
+### Index 조회
+> ```sql
+> SELECT * FROM USER_IND_COLUMNS;
+> ```
+
+### 제약조건(Constraint) 조회
+> ```sql
+> SELECT * FROM USER_CONSTRAINTS;
+> ```
+
 ### Outer Join
 > LEFT OUTER JOIN: 왼쪽에 명기된 테이블의 요소는 다 나오고 오른쪽에 명기된 테이블 요소는 왼쪽과 매칭되는 row가 없으면 null로 표기한다.  
 > RIGHT OUTER JOIN: 오른쪽에 명기된 테이블의 요소는 다 나오고 왼쪽에 명기된 테이블 요소는 오른쪽과 매칭되는 row가 없으면 null로 표기한다.  
 > ```sql
 > -- TABLE STUDENT
-> -- STUDENT_KEY | STUDENT_NAME
+> --    STD_KEY  | STD_NAME
 > --     1       |      A
 > --     2       |      B
 > --     3       |      C
 > --     4       |      D
 >
 > -- TABLE GRADE
-> -- STUDENT_KEY | SCORE
+> --    STD_KEY  | GRD_SCORE
 > --     1       |  10
 > --     2       |  20
 > --     4       |  40
 > 
 > -- STUDENT TABLE 기준 LEFT OUTER JOIN
-> SELECT *
-> FROM STUDENT ST, GRADE GD
-> WHERE ST.STUDENT_KEY = GD.STUDENT_KEY(+);     -- 왼쪽 테이블 전부에 오른쪽 테이블이 (+)되는 형태로 기억하자.
+> SELECT 
+>   STD.*, GRD.STD_KEY, GRD_SCORE
+> FROM STUDENT STD, GRADE GRD
+> WHERE STD.STD_KEY = GRD.STD_KEY(+);     -- 왼쪽 테이블 전부에 오른쪽 테이블이 (+)되는 형태로 기억하자.
 > 
 > -- 결과
-> -- ST.STUDENT_KEY | NAME | GD.STUDENT_KEY | SCORE 
-> --        1       |  A   |        1       |  10
+> -- ST.STD_KEY | STD_NAME |    GRD.STD_KEY | GRD_SCORE 
+> --        1       |  A   |        1       | 10
 > --        2       |  B   |        2       | 20
 > --        4       |  D   |        4       | 40
 > --        3       |  C   |        null    | null
 > 
 > -- STUDENT TABLE 기준 RIGHT OUTER JOIN
-> SELECT * 
-> FROM STUDENT ST, GRADE GD
-> WHERE ST.STUDENT_KEY(+) = GD.STUDENT_KEY;     -- 오른쪽 테이블 전부에 왼쪽 테이블이 (+)되는 형태로 기억하자.
+> SELECT 
+>   STD.*, GRD.STD_KEY, GRD_SCORE 
+> FROM STUDENT STD, GRADE GRD
+> WHERE STD.STD_KEY(+) = GRD.STD_KEY;     -- 오른쪽 테이블 전부에 왼쪽 테이블이 (+)되는 형태로 기억하자.
 > 
 > -- 결과
-> -- ST.STUDENT_KEY | NAME | GD.STUDENT_KEY | SCORE 
-> --        1       |  A   |        1       |  10
+> --   STD.STD_KEY  | NAME |   GRD.STD_KEY  | SCORE 
+> --        1       |  A   |        1       | 10
 > --        2       |  B   |        2       | 20
 > --        4       |  D   |        4       | 40
 > ```
 
 ## Standard SQL
+### EXISTS / IN
+> IN 의 괄호 사이에는 특정 값이나, <b>서브쿼리</b>가 올 수 있는 반면  
+> EXISTS 의 괄호 사이에는 <b>서브쿼리</b>만 올 수 있다.  
+> EXISTS 는 괄호 안의 서브쿼리로 부터 해당 컬럼 값의 존재 유무만 체크하며  
+> IN 은 괄호 안의 특정 값이나 서브쿼리의 결과 값이 포함이 되는지를 체크한다.  
+> ```sql
+> -- TABLE STUDENT
+> -- STD_KEY | STD_NAME
+> --     1       |      A
+> --     2       |      B
+> --     3       |      C
+> --     4       |      D
+>
+> -- TABLE GRADE
+> -- STD_KEY | GRD_SCORE
+> --     1       |  10
+> --     2       |  20
+> --     4       |  40
+>
+> -- IN 에 특정 값을 명시한다.
+> SELECT 
+>   STD_KEY, GRD_SCORE 
+> FROM GRADE 
+> WHERE STD_KEY IN (1, 2, 4);
+> 
+> -- IN 에 서브쿼리(성능의 이점은 없고 그냥 공부용도의 쿼리)
+> SELECT
+>   STD_KEY, GRD_SCORE
+> FROM GRADE
+> WHERE STD_KEY IN (
+>   SELECT 
+>       STD_KEY 
+>   FROM STUDENT 
+>   WHERE STD_KEY IN (1, 2, 4) 
+> );
+> 
+> -- 서브쿼리를 이용한 EXISTS
+> SELECT 
+>   STD_KEY, GRD_SCORE
+> FROM GRADE GRD
+> WHERE EXISTS (
+>   SELECT 1 
+>   FROM STUDENT STD 
+>   WHERE STD.STD_KEY = GRD.STD_KEY
+> );
+> ``` 
+> 참조사이트: [[SQL] WHERE 절을 활용하자, EXISTS!](https://runtoyourdream.tistory.com/112)
+
 ### Scalar(스칼라) [권장하지 않음.]
 > SQL 에서 단일 값을 스칼라 값이라고 한다.  
 > 스칼라 서브쿼리는 SELECT 절에서 오는 서브쿼리로 결과 값으로 1행만 반환한다.
@@ -93,70 +157,73 @@ SQL Query 문법 관련 정리
 > RIGHT OUTER JOIN: 오른쪽에 명기된 테이블의 요소는 다 나오고 왼쪽에 명기된 테이블 요소는 오른쪽과 매칭되는 row가 없으면 null로 표기한다.  
 > ```sql
 > -- TABLE STUDENT
-> -- STUDENT_KEY | STUDENT_NAME
+> --    STD_KEY  | STD_NAME
 > --     1       |      A
 > --     2       |      B
 > --     3       |      C
 > --     4       |      D
 >
 > -- TABLE GRADE
-> -- STUDENT_KEY | SCORE
+> --    STD_KEY  | GRD_SCORE
 > --     1       |  10
 > --     2       |  20
 > --     4       |  40
 > 
 > -- STUDENT TABLE 기준 LEFT OUTER JOIN
-> SELECT *
-> FROM STUDENT ST 
-> LEFT OUTER JOIN GRADE GD ON GD.STUDENT_KEY = ST.STUDENT_KEY;  -- 일부러 GD 를 앞에 두었다.
+> SELECT 
+>   STD.*, GRD.STD_KEY, GRD_SCORE
+> FROM STUDENT STD 
+> LEFT OUTER JOIN GRADE GRD ON GRD.STD_KEY = STD.STD_KEY;  -- 일부러 GRD 를 앞에 두었다.
 > 
 > -- 결과
-> -- ST.STUDENT_KEY | NAME | GD.STUDENT_KEY | SCORE 
-> --        1       |  A   |        1       |  10
-> --        2       |  B   |        2       | 20
-> --        4       |  D   |        4       | 40
-> --        3       |  C   |        null    | null
+> --    STD.STD_KEY | STD.STD_NAME | GRD.STD_KEY | GRD_GRD_SCORE 
+> --        1       |       A      |     1       | 10
+> --        2       |       B      |     2       | 20
+> --        4       |       D      |     4       | 40
+> --        3       |       C      |     null    | null
 > 
 > -- STUDENT TABLE 기준 RIGHT OUTER JOIN
-> SELECT * 
-> FROM STUDENT ST
-> RIGHT OUTER JOIN GRADE GD ON GD.STUDENT_KEY = ST.STUDENT_KEY;  -- 일부러 GD 를 앞에 두었다.
+> SELECT 
+>   STD.*, GRD.STD_KEY, GRD_SCORE
+> FROM STUDENT STD
+> RIGHT OUTER JOIN GRADE GRD ON GRD.STD_KEY = STD.STD_KEY;  -- 일부러 GRD 를 앞에 두었다.
 > 
 > -- 결과
-> -- ST.STUDENT_KEY | NAME | GD.STUDENT_KEY | SCORE 
-> --        1       |  A   |        1       |  10
-> --        2       |  B   |        2       | 20
-> --        4       |  D   |        4       | 40
+> --    STD.STD_KEY | STD.STD_NAME | GRD.STD_KEY | GRD_GRD_SCORE 
+> --        1       |        A     |        1    | 10
+> --        2       |        B     |        2    | 20
+> --        4       |        D     |        4    | 40
 > ```
 
 ### INNER JOIN
 > 조인하는 두 테이블에서 조인 조건에 부합하는 ROW 만 가져온다.
 > ```sql
 > -- TABLE STUDENT
-> -- STUDENT_KEY | STUDENT_NAME
+> --    STD_KEY  | STD_NAME
 > --     1       |      A
 > --     2       |      B
 > --     3       |      C
 > --     4       |      D
 >
 > -- TABLE GRADE
-> -- STUDENT_KEY | SCORE
+> --    STD_KEY  | GRD_SCORE
 > --     1       |  10
 > --     2       |  20
 > --     4       |  40
 >
 > -- INNER JOIN
 > SELECT 
->   * 
-> FROM STUDENT ST, GRADE GD
+>   STD.*, GRD.STD_KEY, GRD_SCORE
+> FROM 
+>   STUDENT STD, GRADE GRD
 > WHERE 
->   GD.STUDENT_KEY = ST.STUDENT_KEY;    -- 다음 조건에도 GD 에 관한 WHERE 조건이 나오도록 GD를 먼저 써줬다.
+>   GRD.STD_KEY = STD.STD_KEY;    -- 다음 조건에도 GRD 에 관한 WHERE 조건이 나오도록 GRD를 먼저 써줬다.
 > 
 > -- 결과
-> -- ST.STUDENT_KEY | NAME | GD.STUDENT_KEY | SCORE 
-> --        1       |  A   |        1       |  10
-> --        2       |  B   |        2       | 20
-> --        4       |  D   |        4       | 40
+> --    STD.STD_KEY | STD.STD_NAME | GRD.STD_KEY | GRD_GRD_SCORE
+> --        1       |         A    |        1    | 10
+> --        2       |         B    |        2    | 20
+> --        4       |         D    |        4    | 40
 > ```
 
 ### ORDER BY
@@ -184,33 +251,33 @@ SQL Query 문법 관련 정리
 > `COUNT(*) OVER()` : 전체행 카운트  
 > ```sql
 > -- TABLE EXAM 
-> -- NAME | MAJOR | SCORE
-> -- 홍길동 | 수학  | 99
-> -- 홍길순 | 수학  | 95
-> -- 고니  | 영어   | 33
+> -- EXM_NAME | EXM_MAJOR | EXM_SCORE
+> --    홍길동  |    수학    |   99
+> --    홍길순  |    수학    |   95
+> --    고니   |    영어     |   33
 >
 > SELECT *, COUNT(*) OVER() FROM EXAM;
 > -- 결과)
-> -- NAME | MAJOR | SCORE | COUNT
-> -- 홍길동 | 수학  | 99   | 3
-> -- 홍길순 | 수학  | 95   | 3
-> -- 고니  | 영어   | 33   | 3
+> -- EXM_NAME | EXM_MAJOR | EXM_SCORE | COUNT
+> --    홍길동  |    수학    |    99     | 3
+> --    홍길순  |    수학    |    95     | 3
+> --    고니   |    영어     |    33     | 3
 > ```
 >
 > `COUNT(*) OVER(PARTITION BY 컬럼)` : 그룹단위로 나누어 카운트  
 > ```sql
 > -- TABLE EXAM 
-> -- NAME | MAJOR | SCORE
-> -- 홍길동 | 수학  | 99
-> -- 홍길순 | 수학  | 95
-> -- 고니  | 영어   | 33
+> -- EXM_NAME | EXM_MAJOR | EXM_SCORE
+> --    홍길동  |    수학    |   99
+> --    홍길순  |    수학    |   95
+> --    고니   |    영어     |   33
 >
-> SELECT *, COUNT(*) OVER(PARTITION BY MAJOR) FROM EXAM;
+> SELECT *, COUNT(*) OVER(PARTITION BY EXM_MAJOR) FROM EXAM;
 > -- 결과)
-> -- NAME | MAJOR | SCORE | COUNT
-> -- 홍길동 | 수학  | 99   | 2
-> -- 홍길순 | 수학  | 95   | 2
-> -- 고니  | 영어   | 33   | 1
+> -- EXM_NAME | EXM_MAJOR | EXM_SCORE | COUNT
+> --    홍길동  |    수학    |    99     | 2
+> --    홍길순  |    수학    |    95     | 2
+> --    고니   |    영어     |    33     | 1
 > ```
 
 ### 서브쿼리를 하는 이유
@@ -222,29 +289,29 @@ SQL Query 문법 관련 정리
 > 뒤에 ORDER BY는 생략이 가능하며 ORDER BY 에 SCORE DESC 를 넣어서 점수가 높은 애부터 1부터 ROW_NUMBER를 줄 수 있다.(줄세우기)
 > ```sql
 > -- TABLE EXAM 
-> -- NAME | MAJOR | SCORE
-> -- 홍길동 | 수학  | 99
-> -- 홍길순 | 수학  | 95
-> -- 고니  | 영어   | 33
-> -- 희동이 | 영어  | 55
+> -- EXM_NAME | EXM_MAJOR | EXM_SCORE
+> --    홍길동  |    수학    |   99
+> --    홍길순  |    수학    |   95
+> --    고니   |    영어     |  33
+> --    희동이  |    영어     |  55
 >
 > -- PARTITION BY 및 ORDER BY 까지 하는 경우
-> SELECT *, ROW_NUMBER() OVER (PARTITION BY MAJOR ORDER BY SCORE DESC) FROM EXAM;
+> SELECT *, ROW_NUMBER() OVER (PARTITION BY EXM_MAJOR ORDER BY EXM_SCORE DESC) FROM EXAM;
 > -- 결과)
-> -- NAME | MAJOR | SCORE | ROW_NUMBER
-> -- 홍길동 | 수학  | 99     | 1
-> -- 홍길순 | 수학  | 95     | 2
-> -- 고니  | 영어   | 33    | 2
-> -- 희동이 | 영어  | 55     | 1
+> -- EXM_NAME | EXM_MAJOR | EXM_SCORE | ROW_NUMBER
+> --    홍길동  |    수학    |    99     |    1
+> --    홍길순  |    수학    |    95     |    2
+> --    고니   |    영어     |    33    |    2
+> --    희동이  |    영어    |    55     |    1
 >
 > -- ORDER BY 만 하는 경우
-> SELECT *, ROW_NUMBER() OVER (ORDER BY SCORE DESC) FROM EXAM;
+> SELECT *, ROW_NUMBER() OVER (ORDER BY EXM_SCORE DESC) FROM EXAM;
 > -- 결과)
-> -- NAME | MAJOR | SCORE | ROW_NUMBER
-> -- 홍길동 | 수학  | 99     | 1
-> -- 홍길순 | 수학  | 95     | 2
-> -- 희동이 | 영어  | 55     | 3
-> -- 고니  | 영어   | 33    | 4
+> -- EXM_NAME | EXM_MAJOR | EXM_SCORE | ROW_NUMBER
+> --    홍길동  |    수학    |    99     |   1
+> --    홍길순  |    수학    |    95     |   2
+> --    희동이  |    영어    |    55     |   3
+> --    고니   |    영어     |    33    |   4
 > ```
 
 ### UNION

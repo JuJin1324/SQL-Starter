@@ -94,6 +94,24 @@ SQL Query 문법 관련 정리
 > ```
 
 ## Standard SQL
+### Logging
+> DB에서는 데이터를 입력하면 로그 파일에 기록한다. 즉, DML 이 발생하면서 많은 양의 로그들이 발생하면서 성능 저하가 일어날 수 있다.  
+> Check point 라는 이벤트가 발생하면 로그파일의 데이터를 데이터 파일에 저장한다.  
+> Nologging 옵션은 로그파일의 기록을 최소화시켜서 입력 시 성능을 향상시키는 방법이다.  
+> Nologging 옵션은 Buffer Cache 라는 메모리 영역을 생략하고 기록한다.  
+> ```sql
+> ALTER TABLE DEPT_TEST NOLOGGING;
+> 
+> INSERT /*+APPEND */ INTO DEPT_TEST
+> SELECT * FROM DEPT;
+> 
+> > ALTER TABLE DEPT_TEST LOGGING;
+> ```
+> 위와 같이 NOLOGGING 옵션 부여와 APPEND 힌트를 사욯아면 INSERT 가 빠르게 실행된다.  
+> INSERT 를 실행 후에 LOGGING 옵션을 다시 부여해준다.  
+> 
+> 단점: 오라클에서 NOLOGGING 작업에 대해서 FLASH BACK 기능을 사용할 수 없다.
+ 
 ### EXISTS / IN
 > IN 의 괄호 사이에는 특정 값이나, <b>서브쿼리</b>가 올 수 있는 반면  
 > EXISTS 의 괄호 사이에는 <b>서브쿼리</b>만 올 수 있다.  
@@ -143,8 +161,9 @@ SQL Query 문법 관련 정리
 > 참조사이트: [[SQL] WHERE 절을 활용하자, EXISTS!](https://runtoyourdream.tistory.com/112)
 
 ### Scalar(스칼라) [권장하지 않음.]
-> SQL 에서 단일 값을 스칼라 값이라고 한다.  
-> 스칼라 서브쿼리는 SELECT 절에서 오는 서브쿼리로 결과 값으로 1행만 반환한다.
+> SQL 에서 단일 값을 스칼라 값이라고 한다.   
+> 스칼라 서브쿼리는 SELECT 절에서 오는 서브쿼리로 결과 값으로 1행만 반환한다.  
+> 스칼라를 권장하지 않는 이유: 가져오는 칼럼이 1개가 넘어가면 확장성이 안좋아쟈 JOIN 을 사용하는게 나아진다 또한 스칼라는 explain 에 cost 가 잡히지 않는다.
 > ```sql
 > SELECT 
 >   EPL.EPL_NAME, 

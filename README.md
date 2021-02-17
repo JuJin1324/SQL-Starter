@@ -62,19 +62,19 @@ SQL Query 문법 관련 정리
 > --     4       |      D
 >
 > -- TABLE GRADE
-> --    STD_KEY  | GRD_SCORE
+> --    STD_KEY  | SCORE
 > --     1       |  10
 > --     2       |  20
 > --     4       |  40
 > 
 > -- STUDENT TABLE 기준 LEFT OUTER JOIN
 > SELECT 
->   STD.*, GRD.STD_KEY, GRD_SCORE
+>   STD.*, GRD.STD_KEY, GRD.SCORE
 > FROM STUDENT STD, GRADE GRD
 > WHERE STD.STD_KEY = GRD.STD_KEY(+);     -- 왼쪽 테이블 전부에 오른쪽 테이블이 (+)되는 형태로 기억하자.
 > 
 > -- 결과
-> -- ST.STD_KEY | STD_NAME |    GRD.STD_KEY | GRD_SCORE 
+> -- ST.STD_KEY | STD_NAME |    GRD.STD_KEY | SCORE 
 > --        1       |  A   |        1       | 10
 > --        2       |  B   |        2       | 20
 > --        4       |  D   |        4       | 40
@@ -82,7 +82,7 @@ SQL Query 문법 관련 정리
 > 
 > -- STUDENT TABLE 기준 RIGHT OUTER JOIN
 > SELECT 
->   STD.*, GRD.STD_KEY, GRD_SCORE 
+>   STD.*, GRD.STD_KEY, GRD.SCORE 
 > FROM STUDENT STD, GRADE GRD
 > WHERE STD.STD_KEY(+) = GRD.STD_KEY;     -- 오른쪽 테이블 전부에 왼쪽 테이블이 (+)되는 형태로 기억하자.
 > 
@@ -126,21 +126,21 @@ SQL Query 문법 관련 정리
 > --     4       |      D
 >
 > -- TABLE GRADE
-> -- STD_KEY | GRD_SCORE
+> -- STD_KEY | SCORE
 > --     1       |  10
 > --     2       |  20
 > --     4       |  40
 >
 > -- IN 에 특정 값을 명시한다.
 > SELECT 
->   STD_KEY, GRD_SCORE 
+>   STD_KEY, SCORE 
 > FROM GRADE 
 > WHERE STD_KEY IN (1, 2, 4);
 > 
 > -- IN 에 서브쿼리(성능의 이점은 없고 그냥 공부용도의 쿼리)
 > SELECT
->   STD_KEY, GRD_SCORE
-> FROM GRADE
+>   STD_KEY, SCORE
+> FROM GRADE 
 > WHERE STD_KEY IN (
 >   SELECT 
 >       STD_KEY 
@@ -150,7 +150,7 @@ SQL Query 문법 관련 정리
 > 
 > -- 서브쿼리를 이용한 EXISTS
 > SELECT 
->   STD_KEY, GRD_SCORE
+>   STD_KEY, SCORE
 > FROM GRADE GRD
 > WHERE EXISTS (
 >   SELECT 1 
@@ -183,19 +183,19 @@ SQL Query 문법 관련 정리
 > --     4       |      D
 >
 > -- TABLE GRADE
-> --    STD_KEY  | GRD_SCORE
+> --    STD_KEY  | SCORE
 > --     1       |  10
 > --     2       |  20
 > --     4       |  40
 > 
 > -- STUDENT TABLE 기준 LEFT OUTER JOIN
 > SELECT 
->   STD.*, GRD.STD_KEY, GRD_SCORE
+>   STD.*, GRD.STD_KEY, SCORE
 > FROM STUDENT STD 
 > LEFT OUTER JOIN GRADE GRD ON GRD.STD_KEY = STD.STD_KEY;  -- 일부러 GRD 를 앞에 두었다.
 > 
 > -- 결과
-> --    STD.STD_KEY | STD.STD_NAME | GRD.STD_KEY | GRD_GRD_SCORE 
+> --    STD.STD_KEY | STD.STD_NAME | GRD.STD_KEY | SCORE 
 > --        1       |       A      |     1       | 10
 > --        2       |       B      |     2       | 20
 > --        4       |       D      |     4       | 40
@@ -203,12 +203,12 @@ SQL Query 문법 관련 정리
 > 
 > -- STUDENT TABLE 기준 RIGHT OUTER JOIN
 > SELECT 
->   STD.*, GRD.STD_KEY, GRD_SCORE
+>   STD.*, GRD.STD_KEY, SCORE
 > FROM STUDENT STD
 > RIGHT OUTER JOIN GRADE GRD ON GRD.STD_KEY = STD.STD_KEY;  -- 일부러 GRD 를 앞에 두었다.
 > 
 > -- 결과
-> --    STD.STD_KEY | STD.STD_NAME | GRD.STD_KEY | GRD_GRD_SCORE 
+> --    STD.STD_KEY | STD.STD_NAME | GRD.STD_KEY | SCORE 
 > --        1       |        A     |        1    | 10
 > --        2       |        B     |        2    | 20
 > --        4       |        D     |        4    | 40
@@ -225,21 +225,21 @@ SQL Query 문법 관련 정리
 > --     4       |      D
 >
 > -- TABLE GRADE
-> --    STD_KEY  | GRD_SCORE
+> --    STD_KEY  | SCORE
 > --     1       |  10
 > --     2       |  20
 > --     4       |  40
 >
 > -- INNER JOIN
 > SELECT 
->   STD.*, GRD.STD_KEY, GRD_SCORE
+>   STD.*, GRD.STD_KEY, SCORE
 > FROM 
 >   STUDENT STD, GRADE GRD
 > WHERE 
 >   GRD.STD_KEY = STD.STD_KEY;    -- 다음 조건에도 GRD 에 관한 WHERE 조건이 나오도록 GRD를 먼저 써줬다.
 > 
 > -- 결과
-> --    STD.STD_KEY | STD.STD_NAME | GRD.STD_KEY | GRD_GRD_SCORE
+> --    STD.STD_KEY | STD.STD_NAME | GRD.STD_KEY | SCORE
 > --        1       |         A    |        1    | 10
 > --        2       |         B    |        2    | 20
 > --        4       |         D    |        4    | 40
@@ -270,14 +270,14 @@ SQL Query 문법 관련 정리
 > `COUNT(*) OVER()` : 전체행 카운트  
 > ```sql
 > -- TABLE EXAM 
-> -- EXM_NAME | EXM_MAJOR | EXM_SCORE
+> -- EXM_NAME | MAJOR | SCORE
 > --    홍길동  |    수학    |   99
 > --    홍길순  |    수학    |   95
 > --    고니   |    영어     |   33
 >
 > SELECT *, COUNT(*) OVER() FROM EXAM;
 > -- 결과)
-> -- EXM_NAME | EXM_MAJOR | EXM_SCORE | COUNT
+> -- EXM_NAME | MAJOR | SCORE | COUNT
 > --    홍길동  |    수학    |    99     | 3
 > --    홍길순  |    수학    |    95     | 3
 > --    고니   |    영어     |    33     | 3
@@ -286,14 +286,14 @@ SQL Query 문법 관련 정리
 > `COUNT(*) OVER(PARTITION BY 컬럼)` : 그룹단위로 나누어 카운트  
 > ```sql
 > -- TABLE EXAM 
-> -- EXM_NAME | EXM_MAJOR | EXM_SCORE
+> -- EXM_NAME | MAJOR | SCORE
 > --    홍길동  |    수학    |   99
 > --    홍길순  |    수학    |   95
 > --    고니   |    영어     |   33
 >
-> SELECT *, COUNT(*) OVER(PARTITION BY EXM_MAJOR) FROM EXAM;
+> SELECT *, COUNT(*) OVER(PARTITION BY MAJOR) FROM EXAM;
 > -- 결과)
-> -- EXM_NAME | EXM_MAJOR | EXM_SCORE | COUNT
+> -- EXM_NAME | MAJOR | SCORE | COUNT
 > --    홍길동  |    수학    |    99     | 2
 > --    홍길순  |    수학    |    95     | 2
 > --    고니   |    영어     |    33     | 1
@@ -308,25 +308,25 @@ SQL Query 문법 관련 정리
 > 뒤에 ORDER BY는 생략이 가능하며 ORDER BY 에 SCORE DESC 를 넣어서 점수가 높은 애부터 1부터 ROW_NUMBER를 줄 수 있다.(줄세우기)
 > ```sql
 > -- TABLE EXAM 
-> -- EXM_NAME | EXM_MAJOR | EXM_SCORE
+> -- EXM_NAME | MAJOR | SCORE
 > --    홍길동  |    수학    |   99
 > --    홍길순  |    수학    |   95
 > --    고니   |    영어     |  33
 > --    희동이  |    영어     |  55
 >
 > -- PARTITION BY 및 ORDER BY 까지 하는 경우
-> SELECT *, ROW_NUMBER() OVER (PARTITION BY EXM_MAJOR ORDER BY EXM_SCORE DESC) FROM EXAM;
+> SELECT *, ROW_NUMBER() OVER (PARTITION BY MAJOR ORDER BY SCORE DESC) FROM EXAM;
 > -- 결과)
-> -- EXM_NAME | EXM_MAJOR | EXM_SCORE | ROW_NUMBER
+> -- EXM_NAME | MAJOR | SCORE | ROW_NUMBER
 > --    홍길동  |    수학    |    99     |    1
 > --    홍길순  |    수학    |    95     |    2
 > --    고니   |    영어     |    33    |    2
 > --    희동이  |    영어    |    55     |    1
 >
 > -- ORDER BY 만 하는 경우
-> SELECT *, ROW_NUMBER() OVER (ORDER BY EXM_SCORE DESC) FROM EXAM;
+> SELECT *, ROW_NUMBER() OVER (ORDER BY SCORE DESC) FROM EXAM;
 > -- 결과)
-> -- EXM_NAME | EXM_MAJOR | EXM_SCORE | ROW_NUMBER
+> -- EXM_NAME | MAJOR | SCORE | ROW_NUMBER
 > --    홍길동  |    수학    |    99     |   1
 > --    홍길순  |    수학    |    95     |   2
 > --    희동이  |    영어    |    55     |   3

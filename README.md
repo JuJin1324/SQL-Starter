@@ -3,7 +3,8 @@ SQL Query 문법 관련 정리
 
 ## DBMS
 ### Table Inner/Outer Join 판별법
-> 테이블 Join 시에 해당 테이블과 Inner Join 을 할 수 있는지 아니면 Outer Join 으로 해야하는지 판별은 다음과 같다.
+> 테이블 Join 시에 해당 테이블과 Inner Join 을 할 수 있는지 아니면 Outer Join 으로 해야하는지 판별은 다음과 같다.  
+> 해당 판별법은 내가 설계한 DB 가 아닌 남이 설계해서 인수인계 받았을 때 DB 관계 파악에 도움이 되기 위한 용도이다.  
 > ```sql
 > -- TABLE STUDENT
 > --    STD_KEY  | STD_NAME
@@ -20,11 +21,17 @@ SQL Query 문법 관련 정리
 >
 > -- Student 테이블을 기준으로 GRADE 테이블과 조인한다고 가정
 > SELECT * 
-> FROM STUDENT STD
-> WHERE NOT EXISTS (SELECT 1 FROM GRADE GRD WHERE GRD.STD_KEY = STD.STD_KEY);
+> FROM STUDENT STD  -- 부모
+> WHERE NOT EXISTS (
+>   SELECT 1 
+>   FROM GRADE GRD  -- 자식
+>   WHERE GRD.STD_KEY = STD.STD_KEY
+> );
 > ```
-> 위의 EXISTS 문은 다음을 설명한다: GRADE 테이블에 STUDENT 테이블에는 없는 ROW 가 존재하는가?
-> 해당 쿼리의 결과 값이 나온다면(GRADE 테이블에 STUDENT 테이블에는 없는 ROW 가 나온다면)  
+> 위의 EXISTS 문은 다음을 설명한다: GRADE 테이블에 STUDENT 테이블에는 없는 ROW 가 존재하는가?  
+> 해당 쿼리의 결과 값이 나온다면(STUDENT(부모) 테이블에만 있고 GRADE(자식) 테이블에는 없는 ROW 가 나온다면)   
+> 1:1 관계가 아니므로 STUDENT(부모) 테이블이 모두 나오도록 JOIN 하기 위해서는 STUDENT(부모) 테이블 기준으로 LEFT OUTER JOIN 한다.   
+> tip: GRADE(자식) 테이블에만 있고 STUDENT(부모) 테이블에는 없는 경우는 존재하지 않는다.  
 
 ### Key 와 Index
 > 대부분의 DB 에서는 Key(PK/UK/FK) 생성 시에 모두 자동으로 Index 를 생성해준다. 하지만 Index 가 자동으로 생성되면 시스템에서 자동으로 붙여준 이름으로 생성이 된다.

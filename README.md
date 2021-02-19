@@ -71,6 +71,9 @@ SQL Query 문법 관련 정리
 > Outer 조인의 경우 쿼리 실행 Cost 가 Inner 보다 많이 들며 Outer 조인의 경우 Explain 으로 Cost 측정이 불가능하다.
 
 ## Oracle
+### Linux 한글 처리
+> 환경변수 NLS_LANG 을 다음과 같이 설정한다: `export NLS_LANG=KOREAN_KOREA.AL32UTF8`
+
 ### Index 조회
 > ```sql
 > SELECT * FROM USER_IND_COLUMNS;
